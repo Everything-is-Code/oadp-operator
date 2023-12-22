@@ -1,0 +1,28 @@
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: oadp-operator
+  namespace: openshift-gitops
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: in-cluster
+  template:
+    metadata:
+      name: oadp-{{cluster}}
+    spec:
+      project: oadp-operator
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: https://github.com/Everything-is-Code/oadp-operator.git
+        targetRevision: main
+        path: resources/
+      destination:
+        server: https://kubernetes.default.svc
+
